@@ -1,6 +1,6 @@
 class_name Player extends CharacterBody2D
 
-var speed = 100.0
+var speed = 95.0
 const JUMP_VELOCITY = -305.0
 
 @onready var sprite: Sprite2D = $Sprite2D

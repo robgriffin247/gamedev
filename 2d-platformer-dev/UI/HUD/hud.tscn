@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3 uid="uid://bhtm3ef30kwix"]
+
+[ext_resource type="Script" path="res://UI/HUD/hud.gd" id="1_lxgck"]
+[ext_resource type="PackedScene" uid="uid://klmhy6u3og48" path="res://UI/Labels/label.tscn" id="1_p3vqw"]
+[ext_resource type="Texture2D" uid="uid://dq5uv4jwcb0bo" path="res://assets/sprites/coin.png" id="2_js3b3"]
+
+[node name="HUD" type="CanvasLayer"]
+script = ExtResource("1_lxgck")
+
+[node name="Label" parent="." instance=ExtResource("1_p3vqw")]
+offset_left = 56.0
+offset_top = 8.0
+offset_right = 168.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 24
+text = "x000"
+vertical_alignment = 1
+font_size = 3
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(32, 32)
+scale = Vector2(3, 3)
+texture = ExtResource("2_js3b3")
+hframes = 12

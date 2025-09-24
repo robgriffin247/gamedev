@@ -15,6 +15,15 @@ run/main_scene="res://playground.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+PlayerManager="*res://Autoloads/player_manager.gd"
+Hud="*res://UI/HUD/hud.tscn"
+
+[display]
+
+window/stretch/mode="viewport"
+
 [input]
 
 jump={
