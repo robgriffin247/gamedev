@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://wii64gu57g6r"]
+
+[ext_resource type="AudioStream" uid="uid://c40rnkx27x5tr" path="res://Assets/Sounds/time_for_adventure.mp3" id="1_b0u7j"]
+
+[node name="Music" type="AudioStreamPlayer2D"]
+stream = ExtResource("1_b0u7j")
+autoplay = true
+bus = &"Music"

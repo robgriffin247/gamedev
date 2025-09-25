@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3 uid="uid://b1l2b04sy3wrk"]
+
+[ext_resource type="Script" path="res://game/levels/exit.gd" id="1_4marp"]
+[ext_resource type="Texture2D" uid="uid://d187810kngnm2" path="res://assets/sprites/world_tileset_mod.png" id="2_faplv"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5yhit"]
+size = Vector2(2, 17)
+
+[node name="Exit" type="Area2D"]
+z_index = 3
+collision_mask = 2
+script = ExtResource("1_4marp")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -13)
+texture = ExtResource("2_faplv")
+region_enabled = true
+region_rect = Rect2(117, 229, 22, 27)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(4, -8.5)
+shape = SubResource("RectangleShape2D_5yhit")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://bey266qjn2it7"]
+
+[ext_resource type="PackedScene" uid="uid://djyo3b55e0o64" path="res://Worlds/Kids/olof.tscn" id="1_ogfv3"]
+[ext_resource type="PackedScene" uid="uid://3k8gq41lpk28" path="res://Player/player.tscn" id="1_t8tvl"]
+
+[node name="Playground" type="Node2D"]
+
+[node name="Player" parent="." instance=ExtResource("1_t8tvl")]
+z_index = 1
+position = Vector2(0, -16)
+
+[node name="Level" parent="." instance=ExtResource("1_ogfv3")]

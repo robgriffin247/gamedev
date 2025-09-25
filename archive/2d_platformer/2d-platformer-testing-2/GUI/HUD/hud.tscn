@@ -1,0 +1,33 @@
+[gd_scene load_steps=4 format=3 uid="uid://bo2caawt5g6pu"]
+
+[ext_resource type="PackedScene" uid="uid://denfupbm3mfhs" path="res://General/Labels/label_regular.tscn" id="1_8iy0n"]
+[ext_resource type="Script" path="res://GUI/HUD/hud.gd" id="1_yogqt"]
+[ext_resource type="Texture2D" uid="uid://cdngjp10s82j3" path="res://Assets/Artwork/sprites/coin.png" id="2_uxd7b"]
+
+[node name="HUD" type="CanvasLayer"]
+script = ExtResource("1_yogqt")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Sprite2D" type="Sprite2D" parent="Control"]
+position = Vector2(36, 36)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("2_uxd7b")
+hframes = 12
+
+[node name="CoinsCount" parent="Control" instance=ExtResource("1_8iy0n")]
+layout_mode = 0
+offset_left = 56.0
+offset_top = 24.0
+offset_right = 152.0
+offset_bottom = 48.0
+theme_override_font_sizes/font_size = 16
+text = "× 999
+"
+vertical_alignment = 1

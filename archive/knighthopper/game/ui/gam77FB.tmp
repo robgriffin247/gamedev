@@ -1,0 +1,81 @@
+[gd_scene load_steps=6 format=3 uid="uid://b1p52f1dn1w3q"]
+
+[ext_resource type="PackedScene" uid="uid://bkn6objnu61ap" path="res://scenes/label.tscn" id="1_872io"]
+[ext_resource type="Script" path="res://scripts/game_over_screen.gd" id="1_q4lxv"]
+[ext_resource type="Script" path="res://scripts/game_over_coins.gd" id="2_ldta4"]
+[ext_resource type="FontFile" uid="uid://5g51h76wnbto" path="res://assets/fonts/PixelOperator8-Bold.ttf" id="3_sc7mo"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dydnw"]
+bg_color = Color(0.780474, 0.454696, 0.115687, 0.745098)
+corner_radius_top_left = 32
+corner_radius_top_right = 32
+corner_radius_bottom_right = 32
+corner_radius_bottom_left = 32
+
+[node name="GameOverScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_q4lxv")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 0
+offset_right = 1152.0
+offset_bottom = 648.0
+color = Color(0, 0, 0, 0.121569)
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 128.0
+offset_top = 88.0
+offset_right = 1024.0
+offset_bottom = 560.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_dydnw")
+
+[node name="GameOverLabel" parent="Panel" instance=ExtResource("1_872io")]
+layout_mode = 0
+offset_left = -120.0
+offset_right = 1016.0
+offset_bottom = 176.0
+theme_override_font_sizes/font_size = 48
+text = "GAME OVER!"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ScoreLabel" parent="Panel" instance=ExtResource("1_872io")]
+layout_mode = 0
+offset_left = -128.0
+offset_top = 120.0
+offset_right = 1008.0
+offset_bottom = 296.0
+theme_override_font_sizes/font_size = 36
+text = "You collected 00 coins :/"
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("2_ldta4")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel"]
+layout_mode = 0
+offset_left = 96.0
+offset_top = 296.0
+offset_right = 798.0
+offset_bottom = 389.0
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="RetryButton" type="Button" parent="Panel/HBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_sc7mo")
+theme_override_font_sizes/font_size = 36
+text = " RETRY "
+
+[node name="ChangeLevelButton" type="Button" parent="Panel/HBoxContainer"]
+visible = false
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_sc7mo")
+theme_override_font_sizes/font_size = 36
+text = " CHANGE LEVEL "
+
+[connection signal="pressed" from="Panel/HBoxContainer/RetryButton" to="." method="_on_retry_button_pressed"]
+[connection signal="pressed" from="Panel/HBoxContainer/ChangeLevelButton" to="." method="_on_retry_button_pressed"]

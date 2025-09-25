@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://bt07b7hllp2l4"]
+
+[ext_resource type="PackedScene" uid="uid://685xy3qhquol" path="res://Menus/coin_counter.tscn" id="1_aahor"]
+
+[node name="HUD" type="CanvasLayer"]
+
+[node name="CoinCounter" parent="." instance=ExtResource("1_aahor")]
