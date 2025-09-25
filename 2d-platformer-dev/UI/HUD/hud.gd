@@ -7,4 +7,4 @@ func _ready() -> void:
 	PlayerManager.coins_changed.connect(_update_coin_count)
 	
 func _update_coin_count() -> void:
-	coin_count.text = "x" + str(PlayerManager.coins)
+	coin_count.text = "x " + str(PlayerManager.coins)

@@ -136,7 +136,7 @@
             add_theme_font_size_override("font_size", font_size * 8)
 
         ```
-1. Position the sprite and label (add x000 as the label text to help!); set scale on sprite and font-size on label
+1. Position the sprite and label (add x 000 as the label text to help!); set scale on sprite and font-size on label
 1. Modify the player manager
     ```
     extends Node
@@ -171,5 +171,37 @@
         PlayerManager.coins_changed.connect(_update_coin_count)
         
     func _update_coin_count() -> void:
-        coin_count.text = "x" + str(PlayerManager.coins)
+        coin_count.text = "x " + str(PlayerManager.coins)
     ```
+1. Add HUD **scene** as an autoload
+
+
+
+1. New 2D scene with root node of Node2D called Slime
+1. Add Slime/Sprite2D and sprites
+1. Add Slime/Area2D and Slime/Area2D/CollisionShape2D (area2d as a child rather than root used becuase we will later add area2ds that act on other layers)
+1. Add Slime/RayCast2D twice, rename to RayCastLeft and RayCastRight
+1. Set collision mask of the raycasts to 9 (enemy layer); add layer 9 to physics layer of WorldTileSet scene too!  
+1. Add Slime/AnimationPlayer and add *default* animation
+1. Add Script
+    ```
+    class_name Slime extends Node2D
+
+    @onready var ray_cast_right: RayCast2D = $RayCastRight
+    @onready var ray_cast_left: RayCast2D = $RayCastLeft
+    @onready var sprite: Sprite2D = $Sprite2D
+
+    var speed := 40
+    var direction := 1
+
+    func _physics_process(delta: float) -> void:
+        
+        if ray_cast_right.is_colliding():
+            direction = -1 
+        if ray_cast_left.is_colliding():
+            direction = 1 
+        sprite.scale.x = direction
+        position.x += delta * direction * speed
+    ```
+
+
