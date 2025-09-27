@@ -1,3 +1,5 @@
+# Player
+
 1. New 2D scene with root of ``CharacterBody`` called ``Player``
 1. Add ``Player/Sprite2D``
 1. Add spritesheet to texture
@@ -44,7 +46,7 @@
 1. Add ``Player/Camera2D`` with zoom set to 4, and position over player
 1. Project settings > Display/Window/Stretch/Mode: Viewport
 
-
+# WorldBuilding
 
 1. New 2D scene with ``TileMapLayer`` root node, called ``WorldTileSet``
 1. Add tileset
@@ -63,6 +65,7 @@
 1. Run the game (set current to main)
 
 
+# Pickups: Coin
 
 1. New 2D scene; ``Area2D`` node called ``Coin``
 1. Add ``Coin/Sprite2D`` and sprite sheet; adjust animation
@@ -113,6 +116,8 @@
         PlayerManager.coins += 1
         print(str(PlayerManager.coins))
     ```
+
+# HUD
 
 1. Add a new 2d scene with ``CanvasLayer`` root called ``HUD``
 1. Add a ``Label`` and a ``Sprite2D``
@@ -176,6 +181,82 @@
 1. Add HUD **scene** as an autoload
 
 
+# Dying
+
+1. Add a HitBox:
+    - Area2D, collision layer to enemy (9), collision mask -> none, monitoring: false; with script:
+    ```
+    class_name HitBox extends Area2D
+
+    signal hit(damage: int)
+
+    func _take_hit(_damage: int) -> void:
+        hit.emit(_damage)
+    ```
+1. Add a HurtBox:
+    - Area2D, collision layer to null, collision mask -> 2 (playerhurt), monitorable: false; with script:
+    ```
+    class_name HurtBox extends Area2D
+
+    @export var damage_effect : int = 1
+
+    func _ready() -> void:
+        area_entered.connect(_area_entered)
+
+    func _area_entered( _area: Area2D) -> void:
+        if _area is HitBox:
+            _area._take_hit(damage_effect)
+    ```
+1. Add a hitbox to player, setting layer to 2 (playerhurt)
+1. Add a collisionshape to hitbox
+1. Update player script to add onready to hitbox, hp and max_hp vars, ready() to set hp and 	hit_box.hit.connect(_take_hit), and a _take_hit() to cost damage from hp and reset if player dies
+    ```
+    class_name Player extends CharacterBody2D
+
+    var speed = 95.0
+    const JUMP_VELOCITY = -305.0
+
+    @onready var sprite: Sprite2D = $Sprite2D
+    @onready var animation_player: AnimationPlayer = $AnimationPlayer
+    @onready var hit_box: HitBox = $HitBox
+
+    var max_hp := 1
+    var hp : int
+
+    func _ready() -> void:
+        hit_box.hit.connect(_take_hit)
+        hp = max_hp
+
+    func _physics_process(delta: float) -> void:
+        # Add the gravity.
+        if not is_on_floor():
+            velocity += get_gravity() * delta
+
+        # Handle jump.
+        if Input.is_action_just_pressed("jump") and is_on_floor():
+            velocity.y = JUMP_VELOCITY
+
+        # Get the input direction and handle the movement/deceleration.
+        var direction := Input.get_axis("left", "right")
+        if direction:
+            velocity.x = direction * speed
+        else:
+            velocity.x = move_toward(velocity.x, 0, speed)
+
+        sprite.scale.x = sign(direction) if direction!=0 else sprite.scale.x
+        
+        animation_player.play("walk" if velocity.x!=0 else "idle")
+        
+        move_and_slide()
+
+    func _take_hit(_damage: int) -> void:
+        hp -= _damage
+        if hp <= 0:
+            get_tree().reload_current_scene()
+    ```
+1. Add hurtbox to the level with appropriate position and shape
+
+# Enemies 
 
 1. New 2D scene with root node of Node2D called Slime
 1. Add Slime/Sprite2D and sprites
@@ -203,5 +284,57 @@
         sprite.scale.x = direction
         position.x += delta * direction * speed
     ```
+1. Add hurtbox and appropriate shape
+
+<!-- MAKE ENEMIES KILLABLE; hurtbox -> player, hitbox & hp -> enemy -->
 
 
+
+# Platforms 
+
+1. New 2D scene animatable body 2d root callled platform
+1. platform/sprite2D and sprites
+1. platform/collisionshape2d and shape
+1. In collisionshape > shape > resource, set local to scene
+1. Add script
+    ```
+    @tool
+    class_name Platform extends AnimatableBody2D
+
+    enum WIDTH {narrow, wide}
+    enum STYLE {grass, sand, lava, ice}
+
+    @export var width := WIDTH.wide:
+        set(_width):
+            width = _width
+            _update_width()
+            
+    @export var style := STYLE.grass:
+        set(_style):
+            style = _style
+            _update_style()
+            
+    @onready var sprite: Sprite2D = $Sprite2D
+    @onready var collision_shape: CollisionShape2D = $CollisionShape2D
+
+    func _ready() -> void:
+        _update_width()
+        _update_style()
+
+
+    func _update_width() -> void:
+        var width_in_px := 16 if width == WIDTH.narrow else 32
+        
+        if sprite:
+            sprite.region_rect.size.x = width_in_px
+            sprite.region_rect.position.x = width_in_px-16	
+        if collision_shape:
+            collision_shape.shape.size.x = width_in_px
+
+
+    func _update_style() -> void:
+        if sprite:
+            sprite.region_rect.position.y = style*16
+
+    ```
+1. Add to maps and add animationplayer to move if needed
