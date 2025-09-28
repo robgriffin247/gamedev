@@ -233,17 +233,17 @@
             velocity += get_gravity() * delta
 
         # Handle jump.
-        if Input.is_action_just_pressed("jump") and is_on_floor():
+        if Input.is_action_just_pressed("jump") and is_on_floor() and hp>0:
             velocity.y = JUMP_VELOCITY
 
         # Get the input direction and handle the movement/deceleration.
         var direction := Input.get_axis("left", "right")
-        if direction:
+        if direction and hp>0:
             velocity.x = direction * speed
         else:
             velocity.x = move_toward(velocity.x, 0, speed)
 
-        sprite.scale.x = sign(direction) if direction!=0 else sprite.scale.x
+        sprite.scale.x = sign(direction) if direction!=0 and hp>0 else sprite.scale.x
         
         animation_player.play("walk" if velocity.x!=0 else "idle")
         
@@ -252,7 +252,9 @@
     func _take_hit(_damage: int) -> void:
         hp -= _damage
         if hp <= 0:
+            await get_tree().physics_frame
             get_tree().reload_current_scene()
+
     ```
 1. Add hurtbox to the level with appropriate position and shape
 
@@ -286,6 +288,44 @@
     ```
 1. Add hurtbox and appropriate shape
 
+#### Killing Enemies
+
+1. Add a hurtbox to player and set mask to 9/enemy, add shape
+1. Add hitbox to enemy with shape
+1. Add a die animation that queue_frees the boxes immediately, and the enemy at the end
+1. Hook up script
+```
+class_name Slime extends Node2D
+
+@onready var ray_cast_right: RayCast2D = $RayCastRight
+@onready var ray_cast_left: RayCast2D = $RayCastLeft
+@onready var sprite: Sprite2D = $Sprite2D
+@onready var hit_box: HitBox = $HitBox
+@onready var animation_player: AnimationPlayer = $AnimationPlayer
+
+var speed := 40
+var direction := 1
+var hp := 1
+
+func _ready() -> void:
+	hit_box.hit.connect(_take_hit)
+
+func _physics_process(delta: float) -> void:
+	
+	if ray_cast_right.is_colliding():
+		direction = -1 
+	if ray_cast_left.is_colliding():
+		direction = 1 
+	sprite.scale.x = direction
+	position.x += delta * direction * speed
+	
+
+func _take_hit(_damage: int) -> void:
+	hp -= _damage
+	if hp <= 0:
+		speed = 0
+		animation_player.play("die")
+```
 <!-- MAKE ENEMIES KILLABLE; hurtbox -> player, hitbox & hp -> enemy -->
 
 
