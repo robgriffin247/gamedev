@@ -39,5 +39,6 @@ func _physics_process(delta: float) -> void:
 func _take_hit(_damage: int) -> void:
 	hp -= _damage
 	if hp <= 0:
+		await get_tree().create_timer(0.5).timeout
 		await get_tree().physics_frame
 		get_tree().reload_current_scene()

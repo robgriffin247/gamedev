@@ -378,3 +378,67 @@ func _take_hit(_damage: int) -> void:
 
     ```
 1. Add to maps and add animationplayer to move if needed
+
+
+
+# Add camera limits
+
+1. Add a levelmanager as an autoload
+```
+extends Node
+
+var current_bounds : Array[Vector2]
+
+signal bounds_changed(bounds: Array[Vector2])
+
+func update_level_bounds(bounds: Array[Vector2]) -> void:
+	current_bounds = bounds
+	bounds_changed.emit(current_bounds)
+```
+1. Add a level script to root node on levels
+```
+class_name Level extends Node2D
+
+@onready var tile_sets: Node2D = $TileSets
+
+
+func _ready() -> void:
+	LevelManager.update_level_bounds(get_bounds())
+
+func get_bounds() -> Array[Vector2]:
+	var bounds: Array[Vector2] = []
+	var left:int
+	var right:int
+	var top:int
+	var bottom:int
+
+	for t in tile_sets.get_children():
+		if is_instance_of(t, TileMapLayer):
+			left = min(left, (t.get_used_rect().position * t.rendering_quadrant_size)[0])
+			right = max(right, (t.get_used_rect().end * t.rendering_quadrant_size)[0])
+			top = min(top, (t.get_used_rect().position * t.rendering_quadrant_size)[1])
+			bottom = max(bottom, (t.get_used_rect().end * t.rendering_quadrant_size)[1])
+	
+	bounds.append(Vector2(left, top))
+	bounds.append(Vector2(right, bottom))
+	
+	return bounds
+```
+1. Add a script to player camera
+```
+class_name PlayerCamera extends Camera2D
+
+func _ready() -> void:
+	LevelManager.bounds_changed.connect(_update_limits)
+	_update_limits(LevelManager.current_bounds)
+
+
+func _update_limits(bounds: Array[Vector2]) -> void:
+	if bounds == []:
+		return
+		
+	limit_left = int(bounds[0].x)
+	limit_top = int(bounds[0].y)
+	limit_right = int(bounds[1].x)
+	limit_bottom = int(bounds[1].y)
+```

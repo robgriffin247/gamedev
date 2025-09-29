@@ -18,6 +18,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 PlayerManager="*res://Autoloads/player_manager.gd"
+LevelManager="*res://Autoloads/level_manager.gd"
 Hud="*res://UI/HUD/hud.tscn"
 
 [display]
